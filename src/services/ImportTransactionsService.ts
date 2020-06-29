@@ -18,16 +18,16 @@ class ImportTransactionsService {
 
     const categoryRepository = getRepository(Category);
 
-    const existentsCategories = await categoryRepository.find({
+    const existentCategories = await categoryRepository.find({
       where: { title: In(categories) },
     });
 
-    const mapedCategories = existentsCategories.map(
+    const mappedCategories = existentCategories.map(
       (category: Category) => category.title,
     );
 
     const leftToAddCategoriesTitles = categories
-      .filter(category => !mapedCategories.includes(category))
+      .filter(category => !mappedCategories.includes(category))
       .filter((value, index, self) => self.indexOf(value) === index);
 
     const newCategories = categoryRepository.create(
@@ -36,7 +36,7 @@ class ImportTransactionsService {
 
     await categoryRepository.save(newCategories);
 
-    const mergedCategories = [...newCategories, ...existentsCategories];
+    const mergedCategories = [...newCategories, ...existentCategories];
 
     const importedTransactions = transactionRepository.create(
       rawTransactions.map(transaction => ({
